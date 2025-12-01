@@ -402,6 +402,9 @@ HIDDEN ULONG STDMETHODCALLTYPE Release(LPWINEASIO iface)
 
     TRACE("iface: %p, ref count is %u\n", iface, (unsigned)ref);
 
+    if (ref != 0)
+        return ref;
+
     if (This->host_driver_state == Running)
         Stop(iface);
     if (This->host_driver_state == Prepared)
@@ -432,8 +435,7 @@ HIDDEN ULONG STDMETHODCALLTYPE Release(LPWINEASIO iface)
             HeapFree(GetProcessHeap(), 0, This->input_channel);
     }
     TRACE("WineASIO terminated\n\n");
-    if (ref == 0)
-        HeapFree(GetProcessHeap(), 0, This);
+    HeapFree(GetProcessHeap(), 0, This);
     return ref;
 }
 
